@@ -32,7 +32,25 @@ app.get("/stats", (req, res) => {
 });
 
 
+app.post("/api/workouts", (req, res) => {
+  db.Workout.create({})
+      .then(dbWorkout => {
+          res.json(dbWorkout)
+      })
+      .catch(err => {
+          res.json(err)
+      })
+})
 
+app.get("/api/workouts", (req, res) => {
+  Workout.find({})
+      .then(dbWorkout => {
+          res.json(dbWorkout)
+      })
+      .catch(err => {
+          res.json(err)
+      })
+})
 
 
 
