@@ -1,9 +1,12 @@
 const express = require("express");
 const logger = require("morgan");
 const mongoose = require("mongoose");
+const path = require('path');
 
 
 const PORT = process.env.PORT || 8080
+
+const db = require("./models");
 
 const app = express();
 
@@ -20,7 +23,9 @@ mongoose.connect(
     {useNewUrlParser: true, useUnifiedTopology: true}
   );
 
-
+  app.get("/exercise", (req, res) => {
+    res.sendFile(path.join(__dirname + "/public/exercise.html"));
+});
 
 
 
