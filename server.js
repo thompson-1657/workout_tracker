@@ -51,7 +51,6 @@ app.get("/api/workouts", (req, res) => {
 });
 
 app.put("/api/workouts/:id", (req, res) => {
-  console.log(req.params.id);
   db.Workout.findByIdAndUpdate(req.params.id, 
     {$push: {exercises: req.body}}
     , {new:true})
@@ -59,7 +58,6 @@ app.put("/api/workouts/:id", (req, res) => {
       res.json(dbWorkout);
     })
     .catch(err => {
-      console.log("error");
       res.json(err);
     });
 })
