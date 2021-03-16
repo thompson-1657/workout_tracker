@@ -23,37 +23,56 @@ mongoose.connect(
     {useNewUrlParser: true, useUnifiedTopology: true}
   );
 
-  app.get("/exercise", (req, res) => {
-    res.sendFile(path.join(__dirname + "/public/exercise.html"));
-});
-
-app.get("/stats", (req, res) => {
-  res.sendFile(path.join(__dirname + "/public/stats.html"));
-});
 
 
 app.post("/api/workouts", (req, res) => {
-  db.Workout.create({})
-      .then(dbWorkout => {
-          res.json(dbWorkout)
-      })
-      .catch(err => {
-          res.json(err)
-      })
+db.Workout.create({})
+.then(dbWorkout => {
+  res.json(dbWorkout);
 })
+.catch((err) => {
+  res.json(err);
+});
+})
+
 
 app.get("/api/workouts", (req, res) => {
-  Workout.find({})
-      .then(dbWorkout => {
-          res.json(dbWorkout)
-      })
-      .catch(err => {
-          res.json(err)
-      })
+  db.Workout.aggregate([{
+    $addFields: {
+      totalDuration: {$sum:'$exercises.duration'}
+    }
+  }])
+    .then(dbWorkout => {
+      res.json(dbWorkout);
+    })
+    .catch(err => {
+      res.json(err);
+    });
+});
+
+app.put("/api/workouts/:id", (req, res) => {
+  console.log(req.params.id);
+  db.Workout.findByIdAndUpdate(req.params.id, 
+    {$push: {exercises: req.body}}
+    , {new:true})
+    .then(dbWorkout => {
+      res.json(dbWorkout);
+    })
+    .catch(err => {
+      console.log("error");
+      res.json(err);
+    });
 })
 
 
 
+app.get("/exercise", (req, res) => {
+  res.sendFile(path.join(__dirname + "/public/exercise.html"));
+});
+
+app.get("/stats", (req, res) => {
+res.sendFile(path.join(__dirname + "/public/stats.html"));
+});
 
 app.listen(PORT, () => {
     console.log(`Running on localhost:${PORT}!`);
